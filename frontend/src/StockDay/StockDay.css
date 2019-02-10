@@ -1,0 +1,9 @@
+.StockDay {
+  border: 1px solid;
+  border-shadow: 2px;
+  margin: auto;
+  width: 50%;
+  text-align: center;
+  vertical-align: middle;
+  padding: 10px;
+}

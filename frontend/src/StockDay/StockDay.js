@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import {LineChart, Line, XAxis, YAxis} from 'recharts';
+import {InputGroup, FormControl, Button} from 'react-bootstrap';
+import './StockDay.css';
 
 import axios from 'axios';
 
@@ -12,7 +14,8 @@ const data = [
 class StockDay extends Component {
   state = {
     stock_data: [
-    ]
+    ],
+    stock_name: null
   }
 
   componentDidMount() {
@@ -22,10 +25,22 @@ class StockDay extends Component {
 
     })
   }
+
+  getStockData = stock_name => {
+    axios.get('/stocks/' + stock_name + '?limit=10').then(res => {
+      console.log(res.data)
+      this.setState({stock_data: res.data})
+    });
+  }
+
+  handleChangeStockName = event => {
+    this.setState({stock_name: event.target.value})
+  }
   // add input to select for stocks
 
   render() {
-    return <LineChart
+    return <div className="StockDay">
+    <LineChart
       width={400}
       height={400}
       data={this.state.stock_data}>
@@ -33,6 +48,13 @@ class StockDay extends Component {
     <YAxis dataKey="adj-close"/>
     <Line type="monotone" dataKey="adj-close" stroke="#8884d8" />
     </LineChart>
+    <InputGroup>
+      <InputGroup.Prepend>
+        <FormControl type="text" placeholder="Stock Ticker" onChange={this.handleChangeStockName}></FormControl>
+        <Button onClick={() => this.getStockData(this.state.stock_name)}>Submit</Button>
+      </InputGroup.Prepend>
+    </InputGroup>
+    </div>
   }
 }
 
