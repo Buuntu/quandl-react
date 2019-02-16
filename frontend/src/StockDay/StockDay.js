@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {LineChart, Line, XAxis, YAxis, Tooltip, Legend, Label} from 'recharts';
+import {LineChart, Line, XAxis, YAxis, Tooltip, Legend, Label, CartesianGrid} from 'recharts';
 import {InputGroup, FormControl, Button, Container, Row, Col, Form} from 'react-bootstrap';
 import './StockDay.css';
 import StockCard from '../StockCard/StockCard';
@@ -109,6 +109,7 @@ class StockDay extends Component {
       width={750}
       height={400}
       data={this.state.stock_data}>
+    <CartesianGrid strokeDasharray="3 3"/>
     <XAxis dataKey="date" label="Date" interval="preserveStartEnd" ticks={[...Array(10).keys()]}/>
     <YAxis label={{ value: 'Price ($)', angle: -90, position: 'insideLeft' }}/>
     <Legend verticalAlign="top" height={36} />
