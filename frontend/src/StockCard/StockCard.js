@@ -7,7 +7,7 @@ const stock_card = props => {
     <Card className="StockCard">
       <Card.Body>
         <Card.Title>{props.stock_name}</Card.Title>
-        <button type="button" class="close" aria-label="Close" class="close" onClick={props.close}>
+        <button type="button" className="close" aria-label="Close" onClick={props.close}>
           <span aria-hidden="true">&times;</span>
         </button>
       </Card.Body>

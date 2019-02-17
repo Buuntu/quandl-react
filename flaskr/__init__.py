@@ -2,6 +2,14 @@ import os
 import quandl
 from flask import jsonify, Flask, make_response, abort, request
 from quandl.errors.quandl_error import NotFoundError
+import pandas_datareader.data as web
+from datetime import datetime, timedelta
+import requests_cache
+
+expire_after = timedelta(days=5)
+
+session = requests_cache.CachedSession(
+    cache_name='cache', backend='sqlite', expire_after=expire_after)
 
 
 def create_app(test_config=None):
@@ -26,44 +34,30 @@ def create_app(test_config=None):
         pass
 
     # Setup quandl API
-    quandl_key = os.environ['QUANDL_API_KEY']
-    quandl.ApiConfig.api_key = quandl_key
-
+    # quandl_key = os.environ['QUANDL_API_KEY']
+    # quandl.ApiConfig.api_key = quandl_key
 
     ### ROUTES ###
     @app.route("/stocks/<stock_id>")
     def get_stock_info(stock_id):
         try:
-            limit = request.args.get('limit')
-            parameters = {}
-            if limit:
-                parameters = {"limit": limit}
-            data = quandl.Dataset('WIKI/' + stock_id).data(params=parameters)
-            new_data = []
-            for i, row in enumerate(data.to_list()):
-                new_data.append({
-                    'date': row[0],
-                    'open': row[1],
-                    'high': row[2],
-                    'low': row[3],
-                    'close': row[4],
-                    'volume': row[5],
-                    'ex-dividend': row[6],
-                    'split-ratio': row[7],
-                    'adj-open': row[8],
-                    'adj-high': row[9],
-                    'adj-low': row[10],
-                    'adj-close': row[11],
-                    'adj-volume': row[12],
-                })
-            data = new_data
-        except NotFoundError:
+            start_date = request.args.get('start_date')
+            end_date = request.args.get('end_date')
+            if start_date:
+                start = datetime.strptime(start_date, '%Y-%m-%d')
+            else:
+                start = datetime.today() - timedelta(days=10)
+
+            if end_date:
+                end = datetime.strptime(end_date, '%Y-%m-%d')
+            else:
+                end = datetime.today()
+
+            data = web.DataReader(stock_id, 'iex', start, end, session=session)
+        except:
             abort(404)
-        # if data.status_code == 404:
-        #     abort(404)
 
-        return jsonify(data)
-
+        return data.to_json(orient='index')
 
     @app.errorhandler(404)
     def not_found(error):

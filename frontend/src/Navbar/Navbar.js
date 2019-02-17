@@ -1,18 +1,17 @@
 import React from 'react';
-import {Navbar, Nav, NavItem} from 'react-bootstrap';
+import {Navbar, Nav} from 'react-bootstrap';
 import './Navbar.css';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-import {LinkContainer} from 'react-router-bootstrap';
+import {IndexLinkContainer, LinkContainer} from 'react-router-bootstrap';
 
 const navbar = () => {
   return (
   <Navbar bg="dark" variant="dark">
-  <Navbar.Brand href="#home"><a href="#"><img src="arrow.svg" id="logo"/></a>
-  Restocks</Navbar.Brand>
   <Nav className="mr-auto">
-    <LinkContainer to="/">
+    <Navbar.Brand href="/"><img src="arrow.svg" id="logo"/>
+    Restocks</Navbar.Brand>
+    <IndexLinkContainer to="/">
       <Nav.Link>Stocks</Nav.Link>
-    </LinkContainer>
+    </IndexLinkContainer>
     <LinkContainer to="/financials">
       <Nav.Link>Financials</Nav.Link>
     </LinkContainer>
